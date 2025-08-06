@@ -7,3 +7,4 @@ services:
     envVars:
       - key: TELEGRAM_TOKEN
         value: "7316577234:AAG1lDOcnJoXuvOaCJvsgWn_-VqzIXtzXLo"
+python-3.10.12
