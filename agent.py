@@ -1,24 +1,30 @@
 from flask import Flask, request
-import telegram
-import os
+from telegram import Bot, Update
+from telegram.ext import Dispatcher, CommandHandler
 
 app = Flask(__name__)
 
-TOKEN = os.environ.get('TELEGRAM_TOKEN')
+# Ton token Telegram Bot
+TELEGRAM_TOKEN = "7316577234:AAG1lDOcnJoXuvOaCJvsgWn_-VqzIXtzXLo"
 
-bot = telegram.Bot(token=TOKEN)
+bot = Bot(token=TELEGRAM_TOKEN)
+dispatcher = Dispatcher(bot, None, workers=0)
 
-@app.route('/webhook', methods=['POST'])
+def start(update, context):
+    update.message.reply_text("Salut ! Ferme IA Ultra est en ligne et prête à fonctionner.")
+
+start_handler = CommandHandler('start', start)
+dispatcher.add_handler(start_handler)
+
+@app.route("/")
+def home():
+    return "Ferme IA Ultra est en ligne !"
+
+@app.route(f"/{TELEGRAM_TOKEN}", methods=["POST"])
 def webhook():
-    update = telegram.Update.de_json(request.get_json(force=True), bot)
-    chat_id = update.message.chat.id
-    text = update.message.text
-    bot.send_message(chat_id=chat_id, text=f'Reçu: {text}')
-    return 'ok'
+    update = Update.de_json(request.get_json(force=True), bot)
+    dispatcher.process_update(update)
+    return "ok"
 
-@app.route('/')
-def index():
-    return 'Agent IA actif !'
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=10000)
+if __name__ == "__main__":
+    app.run(debug=True)
