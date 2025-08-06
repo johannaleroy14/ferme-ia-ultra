@@ -2,22 +2,23 @@ from flask import Flask, request
 import telegram
 import os
 
-TOKEN = os.getenv("BOT_TOKEN")
-CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
-
-bot = telegram.Bot(token=TOKEN)
 app = Flask(__name__)
 
-@app.route('/')
-def home():
-    return "Ferme IA Ultra OK"
+TOKEN = os.environ.get('TELEGRAM_TOKEN')
 
-@app.route('/notify', methods=['POST'])
-def notify():
-    data = request.json
-    message = data.get("message", "Aucune donnée reçue.")
-    bot.send_message(chat_id=CHAT_ID, text=message)
-    return "Envoyé"
+bot = telegram.Bot(token=TOKEN)
+
+@app.route('/webhook', methods=['POST'])
+def webhook():
+    update = telegram.Update.de_json(request.get_json(force=True), bot)
+    chat_id = update.message.chat.id
+    text = update.message.text
+    bot.send_message(chat_id=chat_id, text=f'Reçu: {text}')
+    return 'ok'
+
+@app.route('/')
+def index():
+    return 'Agent IA actif !'
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0', port=10000)

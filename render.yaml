@@ -1,14 +1,12 @@
 services:
   - type: web
-    name: ferme-ia-ultra
+    name: ferme-ia-ultra-agent
     env: python
-    pythonVersion: 3.10
+    region: oregon
+    branch: main
+    plan: free
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn agent:app
+    startCommand: gunicorn agent:app --bind 0.0.0.0:10000
     envVars:
-      - key: BOT_TOKEN
-        value: 7316577234:AAG1lDOcnJoXuvOaCJvsgWn_-VqzIXtzXLo
-      - key: TELEGRAM_CHAT_ID
-        value: 6800524671
-      - key: WALLET_ADDRESS
-        value: 0x3a7712b4ffad1e439db58d973efb3551518d8349
+      - key: TELEGRAM_TOKEN
+        fromSecret: TELEGRAM_TOKEN
