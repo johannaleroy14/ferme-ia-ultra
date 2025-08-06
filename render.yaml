@@ -2,14 +2,13 @@ services:
   - type: web
     name: ferme-ia-ultra
     env: python
-    plan: free
-    branch: main
+    pythonVersion: 3.11
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn agent:app
     envVars:
-      - key: TELEGRAM_TOKEN
-        sync: false
+      - key: BOT_TOKEN
+        value: 7316577234:AAG1lDOcnJoXuvOaCJvsgWn_-VqzIXtzXLo
       - key: TELEGRAM_CHAT_ID
-        sync: false
+        value: 6800524671
       - key: WALLET_ADDRESS
-        sync: false
+        value: 0x3a7712b4ffad1e439db58d973efb3551518d8349
